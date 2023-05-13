@@ -122,8 +122,6 @@ enum RoomType {
   SINGLE
   DOUBLE
   TRIPLE
-  QUAD
-  SUITE
 }
 
 model Room {
