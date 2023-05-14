@@ -11,7 +11,7 @@ async function findHotels() {
       Rooms: {
         select: {
           capacity: true,
-          roomKind: true,
+          roomType: true,
         },
       },
     },

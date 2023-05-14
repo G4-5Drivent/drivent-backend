@@ -17,7 +17,7 @@ async function listHotels(userId: number) {
 }
 
 async function getHotels(userId: number) {
-  // await listHotels(userId);
+  await listHotels(userId);
 
   const hotels = await hotelRepository.findHotels();
   if (!hotels || hotels.length === 0) {
@@ -27,7 +27,7 @@ async function getHotels(userId: number) {
   const formattedHotels = hotels.map((hotel) => {
     const hotelCapacity = hotel.Rooms.reduce((sum, room) => sum + room.capacity, 0);
 
-    const roomKinds = [...new Set(hotel.Rooms.flatMap((room) => room.roomKind))];
+    const roomTypes = [...new Set(hotel.Rooms.flatMap((room) => room.roomType))];
 
     return {
       id: hotel.id,
@@ -36,14 +36,14 @@ async function getHotels(userId: number) {
       createdAt: hotel.createdAt,
       updatedAt: hotel.updatedAt,
       capacity: hotelCapacity,
-      roomKinds: roomKinds.join(', '),
+      roomTypes: roomTypes.join(', '),
     };
   });
   return formattedHotels;
 }
 
 async function getHotelsWithRooms(userId: number, hotelId: number) {
-  // await listHotels(userId);
+  await listHotels(userId);
 
   const hotel = await hotelRepository.findRoomsByHotelId(hotelId);
 
