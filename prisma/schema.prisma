@@ -118,11 +118,18 @@ model Hotel {
   updatedAt DateTime @updatedAt
 }
 
+enum RoomType {
+  SINGLE
+  DOUBLE
+  TRIPLE
+}
+
 model Room {
   id        Int       @id @default(autoincrement())
   name      String
   capacity  Int
   hotelId   Int
+  roomType  RoomType @default(SINGLE)
   Hotel     Hotel     @relation(fields: [hotelId], references: [id],  onDelete: Cascade)
   Booking   Booking[]
   createdAt DateTime  @default(now())

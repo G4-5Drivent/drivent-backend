@@ -23,7 +23,23 @@ async function getHotels(userId: number) {
   if (!hotels || hotels.length === 0) {
     throw notFoundError();
   }
-  return hotels;
+
+  const formattedHotels = hotels.map((hotel) => {
+    const hotelCapacity = hotel.Rooms.reduce((sum, room) => sum + room.capacity, 0);
+
+    const roomTypes = [...new Set(hotel.Rooms.flatMap((room) => room.roomType))];
+
+    return {
+      id: hotel.id,
+      name: hotel.name,
+      image: hotel.image,
+      createdAt: hotel.createdAt,
+      updatedAt: hotel.updatedAt,
+      capacity: hotelCapacity,
+      roomTypes: roomTypes.join(', '),
+    };
+  });
+  return formattedHotels;
 }
 
 async function getHotelsWithRooms(userId: number, hotelId: number) {
