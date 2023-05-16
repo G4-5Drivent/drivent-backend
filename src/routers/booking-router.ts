@@ -9,6 +9,6 @@ bookingRouter
   .get('', listBooking)
   .post('', bookingRoom)
   .put('/:bookingId', changeBooking)
-  .get('info/rooms', listRoomsInfo);
+  .get('/info/rooms', listRoomsInfo);
 
 export { bookingRouter };
