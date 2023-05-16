@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Room } from '@prisma/client';
 import dayjs from 'dayjs';
 const prisma = new PrismaClient();
 
@@ -18,7 +18,7 @@ async function main() {
 
   let hotel = await prisma.hotel.findFirst();
   if (!hotel) {
-    await prisma.hotel.create({
+    hotel = await prisma.hotel.create({
       data: {
         name: 'Hotel Driven',
         image:
@@ -27,22 +27,38 @@ async function main() {
       },
     });
   }
-  hotel = await prisma.hotel.findFirst();
 
-  const room = await prisma.room.findFirst();
-  if (!room && hotel) {
-    await prisma.room.create({
-      data: {
-        name: '102',
-        capacity: 2,
-        roomType: 'DOUBLE',
-        hotelId: hotel.id,
-        updatedAt: dayjs().toDate(),
-      },
+  let rooms = await prisma.room.findFirst();
+  let newRooms;
+  if (!rooms && hotel) {
+    newRooms = await prisma.room.createMany({
+      data: [
+        {
+          name: '102',
+          capacity: 1,
+          roomType: 'SINGLE',
+          hotelId: hotel.id,
+          updatedAt: dayjs().toDate(),
+        },
+        {
+          name: '103',
+          capacity: 2,
+          roomType: 'DOUBLE',
+          hotelId: hotel.id,
+          updatedAt: dayjs().toDate(),
+        },
+        {
+          name: '104',
+          capacity: 3,
+          roomType: 'TRIPLE',
+          hotelId: hotel.id,
+          updatedAt: dayjs().toDate(),
+        },
+      ],
     });
   }
 
-  console.log({ EVENT: event }, { HOTEL: hotel }, { ROOM: room });
+  console.log({ EVENT: event }, { HOTEL: hotel }, { ROOMS: newRooms });
 }
 
 main()
