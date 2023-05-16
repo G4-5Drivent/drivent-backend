@@ -67,7 +67,7 @@ const bookingRepository = {
   findByRoomId,
   findByUserId,
   upsertBooking,
-  findRooms,
+  findRoomsInfo,
 };
 
 export default bookingRepository;

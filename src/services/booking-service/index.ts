@@ -56,7 +56,10 @@ async function changeBookingRoomById(userId: number, roomId: number) {
   });
 }
 
-async function getRoomsInfo() {}
+async function getRoomsInfo() {
+  const rooms = await roomRepository.findRoomsInfo();
+  return rooms;
+}
 
 const bookingService = {
   bookingRoomById,
