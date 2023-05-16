@@ -56,18 +56,12 @@ async function changeBookingRoomById(userId: number, roomId: number) {
   });
 }
 
-async function listRoomsInfo() {
-  const rooms = await bookingRepository.findRoomsInfo();
-  return rooms;
-}
-
 const bookingService = {
   bookingRoomById,
   getBooking,
   changeBookingRoomById,
   checkEnrollmentTicket,
   checkValidBooking,
-  listRoomsInfo,
 };
 
 export default bookingService;

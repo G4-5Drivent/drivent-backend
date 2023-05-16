@@ -32,17 +32,6 @@ export async function bookingRoom(req: AuthenticatedRequest, res: Response, next
   }
 }
 
-export async function listRoomsInfo(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  try {
-    const rooms = await bookingService.listRoomsInfo();
-    return res.status(httpStatus.OK).send({
-      rooms,
-    });
-  } catch (error) {
-    next(error);
-  }
-}
-
 export async function changeBooking(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const { userId } = req;
   const bookingId = Number(req.params.bookingId);

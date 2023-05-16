@@ -10,8 +10,14 @@ async function findHotels() {
     include: {
       Rooms: {
         select: {
+          id: true,
           capacity: true,
           roomType: true,
+          Booking: {
+            select: {
+              id: true,
+            },
+          },
         },
       },
     },
