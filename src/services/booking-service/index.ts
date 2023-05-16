@@ -56,6 +56,8 @@ async function changeBookingRoomById(userId: number, roomId: number) {
   });
 }
 
+async function getRoomsInfo() {}
+
 const bookingService = {
   bookingRoomById,
   getBooking,
