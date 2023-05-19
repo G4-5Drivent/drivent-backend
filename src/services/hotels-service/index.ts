@@ -5,15 +5,14 @@ import ticketsRepository from '@/repositories/tickets-repository';
 import { cannotListHotelsError } from '@/errors/cannot-list-hotels-error';
 
 async function listHotels(userId: number) {
-  const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  if (!enrollment) {
-    throw notFoundError();
-  }
-  const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
-
-  if (!ticket || ticket.status === 'RESERVED' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
-    throw cannotListHotelsError();
-  }
+  // const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
+  // if (!enrollment) {
+  //   throw notFoundError();
+  // }
+  // const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
+  // if (!ticket || ticket.status === 'RESERVED' || ticket.TicketType.isRemote || !ticket.TicketType.includesHotel) {
+  //   throw cannotListHotelsError();
+  // }
 }
 
 async function getHotels(userId: number) {
