@@ -8,7 +8,16 @@ async function getFirstEvent(): Promise<GetFirstEventResult> {
   const event = await eventRepository.findFirst();
   if (!event) throw notFoundError();
 
-  return exclude(event, 'createdAt', 'updatedAt');
+  const formattedEvent = {
+    id: event.id,
+    title: event.title,
+    backgroundImageUrl: event.backgroundImageUrl,
+    startsAt: event.startsAt,
+    endsAt: event.endsAt,
+    logoImageUrl: event.logoImageUrl,
+  };
+
+  return formattedEvent;
 }
 
 export type GetFirstEventResult = Omit<Event, 'createdAt' | 'updatedAt'>;
