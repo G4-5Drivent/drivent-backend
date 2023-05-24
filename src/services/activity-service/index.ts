@@ -1,3 +1,4 @@
+import 'dayjs/locale/pt';
 import dayjs from 'dayjs';
 import ticketService from '../tickets-service';
 import { badRequestError } from '@/errors/bad-request-error';
@@ -31,19 +32,30 @@ async function getActivitiesByDay(userId: number, date: string) {
   return activityRepository.getActivitiesByDay(targetDate);
 }
 
+interface ActivityDay {
+  date: string;
+  day: string;
+}
+
 async function getActivityDays(userId: number) {
   await checkUserAccessToActivities(userId);
 
   const days = await activityRepository.getDayActivities();
 
-  const formattedDays = days.map((day) => {
-    return {
+  const uniqueDays: ActivityDay[] = [];
+
+  days.forEach((day) => {
+    const newDay = {
       date: dayjs(day.startsAt).format('YYYY-MM-DD'),
-      day: dayjs(day.startsAt).locale('pt-br').format('dddd'),
+      day: dayjs(day.startsAt).locale('pt').format('dddd'),
     };
+
+    if (!uniqueDays.find((uniqueDay) => uniqueDay.date === newDay.date)) {
+      uniqueDays.push(newDay);
+    }
   });
 
-  return formattedDays;
+  return uniqueDays;
 }
 
 const activityService = {
