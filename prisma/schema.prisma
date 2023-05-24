@@ -20,7 +20,7 @@ model User {
   Session    Session[]    
   Enrollment Enrollment[] 
   Booking    Booking[]  
-  Subscription Subscription[]
+  ActivityEnrollment ActivityEnrollment[]
 }
 
 model Session {
@@ -162,7 +162,7 @@ model Activity {
   endsAt    DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Subscription Subscription[]
+  ActivityEnrollment ActivityEnrollment[]
 }
 
 model Place {
@@ -174,7 +174,7 @@ model Place {
   Activity  Activity[]
 }
 
-model Subscription {
+model ActivityEnrollment {
   id        Int      @id @default(autoincrement())
   userId    Int
   User      User     @relation(fields: [userId], references: [id],  onDelete: Cascade)
