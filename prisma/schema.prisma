@@ -159,7 +159,6 @@ model Activity {
   startsAt  DateTime
   placeId   Int
   Place     Place    @relation(fields: [placeId], references: [id],  onDelete: Cascade)
-  capacity  Int
   endsAt    DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -169,6 +168,7 @@ model Activity {
 model Place {
   id        Int      @id @default(autoincrement())
   name      String
+  capacity  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Activity  Activity[]
