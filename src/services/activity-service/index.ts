@@ -18,7 +18,7 @@ async function checkUserAccessToActivities(userId: number) {
   if (!ticketType.includesHotel || ticketType.isRemote) throw forBiddenError();
 }
 
-export async function getActivitiesByDay(userId: number, date: string) {
+async function getActivitiesByDay(userId: number, date: string) {
   await checkUserAccessToActivities(userId);
 
   const targetDate = dayjs(date);
@@ -27,3 +27,9 @@ export async function getActivitiesByDay(userId: number, date: string) {
 
   return activityRepository.getActivitiesByDay(targetDate);
 }
+
+const activityService = {
+  getActivitiesByDay,
+};
+
+export default activityService;

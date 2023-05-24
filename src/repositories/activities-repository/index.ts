@@ -10,6 +10,5 @@ export async function getActivitiesByDay(targetDate: Dayjs) {
       },
     },
   });
-
   return activities;
 }
