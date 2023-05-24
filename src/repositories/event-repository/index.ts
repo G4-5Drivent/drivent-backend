@@ -5,7 +5,6 @@ async function findFirst() {
   const cachedEvent = await redis.get(cacheKey);
 
   if (cachedEvent) {
-    console.log('RECEBENDO DO CACHE DO REDIS');
     const event = JSON.parse(cachedEvent);
     return event;
   }

@@ -10,19 +10,22 @@ async function checkUserAccessToActivities(userId: number) {
 
   if (!userTicket) throw notFoundError();
 
-  if (userTicket.status !== 'RESERVED') throw forBiddenError();
+  if (userTicket.status !== 'PAID') throw forBiddenError();
 
   const ticketTypes = await ticketService.getTicketType();
   const ticketType = ticketTypes.find((type) => type.id === userTicket.ticketTypeId);
-  if (!ticketType) throw Error('Ticket type not found');
+
+  if (!ticketType) throw Error('Ticket types not found');
+
   if (!ticketType.includesHotel || ticketType.isRemote) throw forBiddenError();
 }
 
 async function getActivitiesByDay(userId: number, date: string) {
+  if (!date) throw badRequestError();
+
   await checkUserAccessToActivities(userId);
 
-  const targetDate = dayjs(date);
-
+  const targetDate = dayjs(date, 'YYYY-MM-DD');
   if (!targetDate.isValid()) throw badRequestError();
 
   return activityRepository.getActivitiesByDay(targetDate);
