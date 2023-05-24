@@ -16,3 +16,14 @@ export async function getActivitiesByDay(req: AuthenticatedRequest, res: Respons
     next(error);
   }
 }
+
+export async function getDayActivities(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req;
+
+  try {
+    const activities = await activityService.getActivityDays(userId);
+    return res.status(httpStatus.OK).send(activities);
+  } catch (error) {
+    next(error);
+  }
+}
