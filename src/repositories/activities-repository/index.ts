@@ -21,3 +21,7 @@ export async function getDayActivities() {
     distinct: ['startsAt'],
   });
 }
+
+export async function getActivities() {
+  return await prisma.activity.findMany();
+}
