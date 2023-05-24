@@ -12,3 +12,12 @@ export async function getActivitiesByDay(targetDate: Dayjs) {
   });
   return activities;
 }
+
+export async function getDayActivities() {
+  return await prisma.activity.findMany({
+    select: {
+      startsAt: true,
+    },
+    distinct: ['startsAt'],
+  });
+}

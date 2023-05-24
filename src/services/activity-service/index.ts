@@ -31,8 +31,24 @@ async function getActivitiesByDay(userId: number, date: string) {
   return activityRepository.getActivitiesByDay(targetDate);
 }
 
+async function getActivityDays(userId: number) {
+  await checkUserAccessToActivities(userId);
+
+  const days = await activityRepository.getDayActivities();
+
+  const formattedDays = days.map((day) => {
+    return {
+      date: dayjs(day.startsAt).format('YYYY-MM-DD'),
+      day: dayjs(day.startsAt).locale('pt-br').format('dddd'),
+    };
+  });
+
+  return formattedDays;
+}
+
 const activityService = {
   getActivitiesByDay,
+  getActivityDays,
 };
 
 export default activityService;
