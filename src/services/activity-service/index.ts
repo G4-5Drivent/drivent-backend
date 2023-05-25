@@ -67,6 +67,21 @@ async function subscribeToActivity(userId: number, activityId: number) {
   return await activityRepository.subscribeToActivity(userId, activityId);
 }
 
+async function unsubscribeToActivity(userId: number, activityId: number) {
+  if (!userId || !activityId) throw badRequestError();
+
+  await checkUserAccessToActivities(userId);
+  await checkUserHasActivity(activityId, userId);
+
+  return await activityRepository.unsubscribeToActivity(userId, activityId);
+}
+
+async function checkUserHasActivity(activityId: number, userId: number) {
+  const activityEnrollment = await activityRepository.getUserActivityEnrollmendById(activityId, userId);
+  if (!activityEnrollment) throw notFoundError();
+  if (activityEnrollment.userId !== userId) throw forBiddenError();
+}
+
 async function checkActivityAvailability(activityId: number) {
   const activity = await activityRepository.getActivityById(activityId);
 
@@ -74,7 +89,7 @@ async function checkActivityAvailability(activityId: number) {
 
   const placeCapacity = await activityRepository.getPlaceById(activity.placeId);
 
-  const activityEnrollments = await activityRepository.getActivityEnrollments(activityId);
+  const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
 
   if (activityEnrollments.length >= placeCapacity.capacity) throw forBiddenError();
 }
@@ -83,6 +98,7 @@ const activityService = {
   getActivitiesByDay,
   getActivityDays,
   subscribeToActivity,
+  unsubscribeToActivity,
 };
 
 export default activityService;
