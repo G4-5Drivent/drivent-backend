@@ -1,8 +1,12 @@
 import { Router } from 'express';
 import { authenticateToken } from '@/middlewares';
-import { getActivitiesByDay, getDayActivities } from '@/controllers';
+import { getActivitiesByDay, getDayActivities, subscribeToActivity } from '@/controllers';
 
 const activitiesRouter = Router();
-activitiesRouter.use('/*', authenticateToken).get('').get('/date', getActivitiesByDay).get('/days', getDayActivities);
+activitiesRouter
+  .use('/*', authenticateToken)
+  .post('', subscribeToActivity)
+  .get('/date', getActivitiesByDay)
+  .get('/days', getDayActivities);
 
 export { activitiesRouter };

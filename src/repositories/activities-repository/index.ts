@@ -1,7 +1,5 @@
 import { Dayjs } from 'dayjs';
 import { prisma } from '@/config';
-import { notFoundError } from '@/errors';
-import ticketService from '@/services/tickets-service';
 
 export async function getActivitiesByDay(targetDate: Dayjs) {
   const activities = await prisma.activity.findMany({
@@ -57,6 +55,15 @@ export async function getPlaceById(id: number) {
   return await prisma.place.findUnique({
     where: {
       id,
+    },
+  });
+}
+
+export async function unsubscribeToActivity(activityId: number, userId: number) {
+  return await prisma.activityEnrollment.deleteMany({
+    where: {
+      activityId,
+      userId,
     },
   });
 }

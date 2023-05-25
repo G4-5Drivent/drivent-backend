@@ -59,6 +59,8 @@ async function getActivityDays(userId: number) {
 }
 
 async function subscribeToActivity(userId: number, activityId: number) {
+  if (!userId || !activityId) throw badRequestError();
+
   await checkUserAccessToActivities(userId);
   await checkActivityAvailability(activityId);
 
