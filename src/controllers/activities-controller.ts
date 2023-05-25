@@ -27,3 +27,15 @@ export async function getDayActivities(req: AuthenticatedRequest, res: Response,
     next(error);
   }
 }
+
+export async function subscribeToActivity(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req;
+  const { activityId } = req.body;
+
+  try {
+    await activityService.subscribeToActivity(userId, activityId);
+    return res.sendStatus(httpStatus.CREATED);
+  } catch (error) {
+    next(error);
+  }
+}

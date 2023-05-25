@@ -60,6 +60,7 @@ async function getActivityDays(userId: number) {
 
 async function subscribeToActivity(userId: number, activityId: number) {
   await checkUserAccessToActivities(userId);
+  await checkActivityAvailability(activityId);
 
   return await activityRepository.subscribeToActivity(userId, activityId);
 }
@@ -69,14 +70,17 @@ async function checkActivityAvailability(activityId: number) {
 
   if (!activity) throw notFoundError();
 
+  const placeCapacity = await activityRepository.getPlaceById(activity.placeId);
+
   const activityEnrollments = await activityRepository.getActivityEnrollments(activityId);
 
-  if (activityEnrollments.length >= activity.capacity) throw forBiddenError();
+  if (activityEnrollments.length >= placeCapacity.capacity) throw forBiddenError();
 }
 
 const activityService = {
   getActivitiesByDay,
   getActivityDays,
+  subscribeToActivity,
 };
 
 export default activityService;
