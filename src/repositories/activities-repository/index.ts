@@ -28,6 +28,14 @@ export async function getActivities() {
   return await prisma.activity.findMany();
 }
 
+export async function getActivityById(id: number) {
+  return await prisma.activity.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
 export async function subscribeToActivity(userId: number, activityId: number) {
   return await prisma.activityEnrollment.create({
     data: {

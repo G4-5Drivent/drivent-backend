@@ -58,6 +58,22 @@ async function getActivityDays(userId: number) {
   return uniqueDays;
 }
 
+async function subscribeToActivity(userId: number, activityId: number) {
+  await checkUserAccessToActivities(userId);
+
+  return await activityRepository.subscribeToActivity(userId, activityId);
+}
+
+// async function checkActivityAvailability(activityId: number) {
+//   const activity = await activityRepository.getActivityById(activityId);
+
+//   if (!activity) throw notFoundError();
+
+//   const activityEnrollments = await activityRepository.getActivityEnrollments(activityId);
+
+//   if (activityEnrollments.length >= activity.capacity) throw forBiddenError();
+// }
+
 const activityService = {
   getActivitiesByDay,
   getActivityDays,
