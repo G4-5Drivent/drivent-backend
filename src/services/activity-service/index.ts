@@ -64,15 +64,15 @@ async function subscribeToActivity(userId: number, activityId: number) {
   return await activityRepository.subscribeToActivity(userId, activityId);
 }
 
-// async function checkActivityAvailability(activityId: number) {
-//   const activity = await activityRepository.getActivityById(activityId);
+async function checkActivityAvailability(activityId: number) {
+  const activity = await activityRepository.getActivityById(activityId);
 
-//   if (!activity) throw notFoundError();
+  if (!activity) throw notFoundError();
 
-//   const activityEnrollments = await activityRepository.getActivityEnrollments(activityId);
+  const activityEnrollments = await activityRepository.getActivityEnrollments(activityId);
 
-//   if (activityEnrollments.length >= activity.capacity) throw forBiddenError();
-// }
+  if (activityEnrollments.length >= activity.capacity) throw forBiddenError();
+}
 
 const activityService = {
   getActivitiesByDay,

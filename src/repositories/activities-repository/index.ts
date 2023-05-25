@@ -36,7 +36,7 @@ export async function getActivityById(id: number) {
   });
 }
 
-export async function getActivitiesEnrollments(activityId: number) {
+export async function getActivityEnrollments(activityId: number) {
   return await prisma.activityEnrollment.findMany({
     where: {
       activityId,
@@ -49,6 +49,14 @@ export async function subscribeToActivity(userId: number, activityId: number) {
     data: {
       userId,
       activityId,
+    },
+  });
+}
+
+export async function getPlaceById(id: number) {
+  return await prisma.place.findUnique({
+    where: {
+      id,
     },
   });
 }
