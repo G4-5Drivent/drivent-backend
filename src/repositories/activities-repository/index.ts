@@ -29,38 +29,7 @@ export async function getActivities() {
 }
 
 export async function subscribeToActivity(userId: number, activityId: number) {
-  const activity = await prisma.activity.findUnique({
-    where: {
-      id: activityId,
-    },
-  });
-
-  if (!activity) throw notFoundError();
-
-  if (userTicket.status !== 'PAID') throw Error('Ticket not paid');
-
-  const ticketType = await prisma.ticketType.findUnique({
-    where: {
-      id: userTicket.ticketTypeId,
-    },
-  });
-
-  if (!ticketType) throw Error('Ticket type not found');
-
-  if (!ticketType.includesHotel || ticketType.isRemote) throw Error('Ticket type not allowed');
-
-  const activitySubscription = await prisma.activitySubscription.findUnique({
-    where: {
-      userId_activityId: {
-        userId,
-        activityId,
-      },
-    },
-  });
-
-  if (activitySubscription) throw Error('User already subscribed to activity');
-
-  return await prisma.activitySubscription.create({
+  return await prisma.activityEnrollment.create({
     data: {
       userId,
       activityId,
