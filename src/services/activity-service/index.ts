@@ -6,21 +6,6 @@ import * as activityRepository from '@/repositories/activities-repository';
 import { notFoundError } from '@/errors';
 import { forBiddenError } from '@/errors/forbidden-error';
 
-async function checkUserAccessToActivities(userId: number) {
-  const userTicket = await ticketService.getTicketByUserId(userId);
-
-  if (!userTicket) throw notFoundError();
-
-  if (userTicket.status !== 'PAID') throw forBiddenError();
-
-  const ticketTypes = await ticketService.getTicketType();
-  const ticketType = ticketTypes.find((type) => type.id === userTicket.ticketTypeId);
-
-  if (!ticketType) throw Error('Ticket types not found');
-
-  if (!ticketType.includesHotel || ticketType.isRemote) throw forBiddenError();
-}
-
 async function getActivitiesByDay(userId: number, date: string) {
   if (!date) throw badRequestError();
 
@@ -61,6 +46,7 @@ async function getActivityDays(userId: number) {
 async function subscribeToActivity(userId: number, activityId: number) {
   if (!userId || !activityId) throw badRequestError();
 
+  await checkUserAlreadySubscribed(activityId, userId);
   await checkUserAccessToActivities(userId);
   await checkActivityAvailability(activityId);
 
@@ -71,12 +57,35 @@ async function unsubscribeToActivity(userId: number, activityId: number) {
   if (!userId || !activityId) throw badRequestError();
 
   await checkUserAccessToActivities(userId);
-  await checkUserHasActivity(activityId, userId);
+  await checkUserActivityOwnship(activityId, userId);
 
   return await activityRepository.unsubscribeToActivity(userId, activityId);
 }
 
-async function checkUserHasActivity(activityId: number, userId: number) {
+const activityService = {
+  getActivitiesByDay,
+  getActivityDays,
+  subscribeToActivity,
+  unsubscribeToActivity,
+};
+
+export default activityService;
+
+async function checkUserAccessToActivities(userId: number) {
+  const userTicket = await ticketService.getTicketByUserId(userId);
+  if (!userTicket) throw notFoundError();
+
+  if (userTicket.status !== 'PAID') throw forBiddenError();
+
+  const ticketTypes = await ticketService.getTicketType();
+  const ticketType = ticketTypes.find((type) => type.id === userTicket.ticketTypeId);
+
+  if (!ticketType) throw Error('Ticket types not found');
+
+  if (!ticketType.includesHotel || ticketType.isRemote) throw forBiddenError();
+}
+
+async function checkUserActivityOwnship(activityId: number, userId: number) {
   const activityEnrollment = await activityRepository.getUserActivityEnrollmendById(activityId, userId);
   if (!activityEnrollment) throw notFoundError();
   if (activityEnrollment.userId !== userId) throw forBiddenError();
@@ -94,11 +103,27 @@ async function checkActivityAvailability(activityId: number) {
   if (activityEnrollments.length >= placeCapacity.capacity) throw forBiddenError();
 }
 
-const activityService = {
-  getActivitiesByDay,
-  getActivityDays,
-  subscribeToActivity,
-  unsubscribeToActivity,
-};
+async function checkUserAlreadySubscribed(activityId: number, userId: number) {
+  const activityEnrollment = await activityRepository.getUserActivityEnrollmendById(activityId, userId);
+  if (activityEnrollment) throw forBiddenError();
+}
 
-export default activityService;
+// async function checkActivitiesTimeConflict(activityId: number, userId: number) {
+//   const activity = await activityRepository.getActivityById(activityId);
+
+//   if (!activity) throw notFoundError();
+
+//   const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
+
+//   const userEnrollments = activityEnrollments.filter((enrollment) => enrollment.userId === userId);
+
+//   const userEnrollmentsIds = userEnrollments.map((enrollment) => enrollment.id);
+
+//   const userEnrollmentsActivities = await activityRepository.getActivitiesByIds(userEnrollmentsIds);
+
+//   const activitiesTimeConflict = userEnrollmentsActivities.filter(
+//     (enrollmentActivity) => enrollmentActivity.startsAt === activity.startsAt,
+//   );
+
+//   if (activitiesTimeConflict.length > 0) throw forBiddenError();
+// }
