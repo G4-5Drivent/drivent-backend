@@ -19,7 +19,8 @@ model User {
   updatedAt  DateTime     @updatedAt
   Session    Session[]    
   Enrollment Enrollment[] 
-  Booking    Booking[]    
+  Booking    Booking[]  
+  ActivityEnrollment ActivityEnrollment[]
 }
 
 model Session {
@@ -150,4 +151,35 @@ model Booking {
 model Teste {
   id    Int    @id @default(autoincrement())
   name  String
+}
+
+model Activity {
+  id        Int      @id @default(autoincrement())
+  name      String
+  startsAt  DateTime
+  placeId   Int
+  Place     Place    @relation(fields: [placeId], references: [id],  onDelete: Cascade)
+  endsAt    DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ActivityEnrollment ActivityEnrollment[]
+}
+
+model Place {
+  id        Int      @id @default(autoincrement())
+  name      String
+  capacity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Activity  Activity[]
+}
+
+model ActivityEnrollment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id],  onDelete: Cascade)
+  activityId Int
+  Activity  Activity @relation(fields: [activityId], references: [id],  onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -1,4 +1,4 @@
-import { PrismaClient, Room } from '@prisma/client';
+import { Activity, PrismaClient, Room } from '@prisma/client';
 import dayjs from 'dayjs';
 const prisma = new PrismaClient();
 
@@ -30,8 +30,8 @@ async function main() {
 
   let rooms = await prisma.room.findFirst();
   let newRooms;
-  if (!rooms && hotel) {
-    newRooms = await prisma.room.createMany({
+  if (!rooms) {
+    await prisma.room.createMany({
       data: [
         {
           name: '102',
@@ -57,8 +57,68 @@ async function main() {
       ],
     });
   }
+  newRooms = await prisma.room.findMany({});
 
-  console.log({ EVENT: event }, { HOTEL: hotel }, { ROOMS: newRooms });
+  let places = await prisma.place.findFirst();
+  let newPlaces;
+  if (!places) {
+    await prisma.place.createMany({
+      data: [
+        {
+          name: 'Auditório Principal',
+          capacity: 50,
+          updatedAt: dayjs().toDate(),
+        },
+        {
+          name: 'Sala de Reuniões 3',
+          capacity: 10,
+          updatedAt: dayjs().toDate(),
+        },
+        {
+          name: 'Sala de Workshop',
+          capacity: 30,
+          updatedAt: dayjs().toDate(),
+        },
+      ],
+    });
+  }
+  newPlaces = await prisma.place.findMany({});
+
+  let activities = await prisma.activity.findFirst();
+  let newActivities;
+  if (!activities) {
+    const currentTime = dayjs().startOf('day').add(9, 'hour');
+    const activityNames = [
+      'Conference Talk',
+      'Workshop',
+      'Panel Discussion',
+      'Keynote Speech',
+      'Networking Event',
+      'Training Session',
+      'Hackathon',
+      'Seminar',
+      'Product Demo',
+      'Team Building Exercise',
+      'Q&A Session',
+      'Industry Panel',
+      'Roundtable Discussion',
+      'Presentation',
+      'Tutorial',
+    ];
+
+    await prisma.activity.createMany({
+      data: getActivities(),
+    });
+  }
+  newActivities = await prisma.activity.findMany({});
+
+  console.log(
+    { EVENT: event },
+    { HOTEL: hotel },
+    { ROOMS: newRooms },
+    { PLACES: newPlaces },
+    { ACTIVITIES: newActivities },
+  );
 }
 
 main()
@@ -69,3 +129,52 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
+function getActivities() {
+  const days = 3;
+  const dayToSet = dayjs('2023-06-02');
+  const currentTime = dayToSet.startOf('day').add(9, 'hour');
+
+  const arr: any = [];
+
+  for (let i = 0; i < days; i++) {
+    const activityDate = currentTime.add(i, 'day');
+    arr.push({
+      name: 'Conference Talk',
+      startsAt: activityDate.toDate(),
+      endsAt: activityDate.add(1, 'hour').toDate(),
+      placeId: 1,
+      updatedAt: dayjs().toDate(),
+    });
+    arr.push({
+      name: 'Workshop',
+      startsAt: activityDate.add(1, 'hour').toDate(),
+      endsAt: activityDate.add(2, 'hour').toDate(),
+      placeId: 1,
+      updatedAt: dayjs().toDate(),
+    });
+    arr.push({
+      name: 'Panel Discussion',
+      startsAt: activityDate.add(2, 'hour').toDate(),
+      endsAt: activityDate.add(4, 'hour').toDate(),
+      placeId: 2,
+      updatedAt: dayjs().toDate(),
+    });
+    arr.push({
+      name: 'Keynote Speech',
+      startsAt: activityDate.add(3, 'hour').toDate(),
+      endsAt: activityDate.add(4, 'hour').toDate(),
+      placeId: 3,
+      updatedAt: dayjs().toDate(),
+    });
+    arr.push({
+      name: 'Networking Event',
+      startsAt: activityDate.add(4, 'hour').toDate(),
+      endsAt: activityDate.add(5, 'hour').toDate(),
+      placeId: 3,
+      updatedAt: dayjs().toDate(),
+    });
+  }
+
+  return arr;
+}
