@@ -85,7 +85,31 @@ async function getDatePlacesAndActivities(userId: number, date: string) {
   const targetDate = dayjs(date, 'YYYY-MM-DD');
   if (!targetDate.isValid()) throw badRequestError();
 
-  return await activityRepository.getDatePlacesAndActivities(targetDate);
+  const places = await activityRepository.getDatePlacesAndActivities(targetDate);
+
+  const formattedPlaces = places.map((place) => {
+    const formattedPlace = {
+      id: place.id,
+      name: place.name,
+
+      activities: place.Activity.map((activity) => {
+        const formattedActivity = {
+          id: activity.id,
+          name: activity.name,
+          placeId: activity.placeId,
+          startsAt: dayjs(activity.startsAt).format('HH:mm'),
+          endsAt: dayjs(activity.endsAt).format('HH:mm'),
+          spotsAvailable: place.capacity - activity.ActivityEnrollment.length,
+        };
+
+        return formattedActivity;
+      }),
+    };
+
+    return formattedPlace;
+  });
+
+  return formattedPlaces;
 }
 
 const activityService = {

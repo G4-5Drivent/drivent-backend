@@ -66,6 +66,9 @@ export async function getDatePlacesAndActivities(date: Dayjs) {
             lt: date.endOf('day').toDate(),
           },
         },
+        include: {
+          ActivityEnrollment: true,
+        },
       },
     },
   });
