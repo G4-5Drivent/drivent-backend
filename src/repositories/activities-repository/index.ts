@@ -56,6 +56,24 @@ export async function getUserActivities(userId: number) {
   });
 }
 
+export async function getDatePlacesAndActivities(date: Dayjs) {
+  return await prisma.place.findMany({
+    include: {
+      Activity: {
+        where: {
+          startsAt: {
+            gte: date.startOf('day').toDate(),
+            lt: date.endOf('day').toDate(),
+          },
+        },
+        include: {
+          ActivityEnrollment: true,
+        },
+      },
+    },
+  });
+}
+
 export async function getUserActivityEnrollmendById(activityId: number, userId: number) {
   return await prisma.activityEnrollment.findFirst({
     where: {

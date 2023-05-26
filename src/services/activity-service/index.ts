@@ -7,7 +7,7 @@ import { conflictError, notFoundError } from '@/errors';
 import { forBiddenError } from '@/errors/forbidden-error';
 import { ActivityFullCapacityError } from '@/errors/activity-full-capacity-error';
 
-async function getActivitiesByDay(userId: number, date: string) {
+async function getActivitiesByDate(userId: number, date: string) {
   if (!date) throw badRequestError();
 
   await checkUserAccessToActivities(userId);
@@ -77,11 +77,47 @@ async function unsubscribeToActivity(userId: number, activityId: number) {
   return await activityRepository.unsubscribeToActivity(userId, activityId);
 }
 
+async function getDatePlacesAndActivities(userId: number, date: string) {
+  if (!date) throw badRequestError();
+
+  await checkUserAccessToActivities(userId);
+
+  const targetDate = dayjs(date, 'YYYY-MM-DD');
+  if (!targetDate.isValid()) throw badRequestError();
+
+  const places = await activityRepository.getDatePlacesAndActivities(targetDate);
+
+  const formattedPlaces = places.map((place) => {
+    const formattedPlace = {
+      id: place.id,
+      name: place.name,
+
+      activities: place.Activity.map((activity) => {
+        const formattedActivity = {
+          id: activity.id,
+          name: activity.name,
+          placeId: activity.placeId,
+          startsAt: dayjs(activity.startsAt).format('HH:mm'),
+          endsAt: dayjs(activity.endsAt).format('HH:mm'),
+          spotsAvailable: place.capacity - activity.ActivityEnrollment.length,
+        };
+
+        return formattedActivity;
+      }),
+    };
+
+    return formattedPlace;
+  });
+
+  return formattedPlaces;
+}
+
 const activityService = {
-  getActivitiesByDay,
+  getActivitiesByDate,
   getActivityDays,
   subscribeToActivity,
   unsubscribeToActivity,
+  getDatePlacesAndActivities,
 };
 
 export default activityService;
