@@ -50,6 +50,9 @@ export async function getUserActivities(userId: number) {
     where: {
       userId,
     },
+    include: {
+      Activity: true,
+    },
   });
 }
 

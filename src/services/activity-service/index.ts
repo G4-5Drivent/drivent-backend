@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import ticketService from '../tickets-service';
 import { badRequestError } from '@/errors/bad-request-error';
 import * as activityRepository from '@/repositories/activities-repository';
-import { notFoundError } from '@/errors';
+import { conflictError, notFoundError } from '@/errors';
 import { forBiddenError } from '@/errors/forbidden-error';
 import { ActivityFullCapacityError } from '@/errors/activity-full-capacity-error';
 
@@ -22,6 +22,7 @@ async function getActivitiesByDay(userId: number, date: string) {
       ...activity,
       startsAt: dayjs(activity.startsAt).format('HH:mm'),
       endsAt: dayjs(activity.endsAt).format('HH:mm'),
+      date: dayjs(activity.startsAt).format('YYYY-MM-DD'),
     };
 
     return formattedActivity;
@@ -59,9 +60,10 @@ async function getActivityDays(userId: number) {
 async function subscribeToActivity(userId: number, activityId: number) {
   if (!userId || !activityId) throw badRequestError();
 
-  await checkUserAlreadySubscribed(activityId, userId);
   await checkUserAccessToActivities(userId);
+  await checkUserAlreadySubscribed(activityId, userId);
   await checkActivityAvailability(activityId);
+  await checkActivitiesTimeConflict(activityId, userId);
 
   return await activityRepository.subscribeToActivity(userId, activityId);
 }
@@ -118,7 +120,7 @@ async function checkActivityAvailability(activityId: number) {
 
 async function checkUserAlreadySubscribed(activityId: number, userId: number) {
   const activityEnrollment = await activityRepository.getUserActivityEnrollmendById(activityId, userId);
-  if (activityEnrollment) throw forBiddenError();
+  if (activityEnrollment) throw conflictError('User already subscribed to activity');
 }
 
 async function checkActivitiesTimeConflict(activityId: number, userId: number) {
@@ -126,17 +128,16 @@ async function checkActivitiesTimeConflict(activityId: number, userId: number) {
 
   if (!activity) throw notFoundError();
 
-  const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
+  const activityEnrollments = await activityRepository.getUserActivities(userId);
 
-  const userEnrollments = activityEnrollments.filter((enrollment) => enrollment.userId === userId);
+  for (const enrollment of activityEnrollments) {
+    const activityStartsAt = dayjs(enrollment.Activity.startsAt);
+    const activityEndsAt = dayjs(enrollment.Activity.endsAt);
+    const newActivityStartsAt = dayjs(activity.startsAt);
+    const newActivityEndsAt = dayjs(activity.endsAt);
 
-  const userEnrollmentsIds = userEnrollments.map((enrollment) => enrollment.id);
-
-  const userEnrollmentsActivities = await activityRepository.getActivitiesByIds(userEnrollmentsIds);
-
-  const activitiesTimeConflict = userEnrollmentsActivities.filter(
-    (enrollmentActivity) => enrollmentActivity.startsAt === activity.startsAt,
-  );
-
-  if (activitiesTimeConflict.length > 0) throw forBiddenError();
+    if (newActivityStartsAt.isBefore(activityEndsAt) && newActivityEndsAt.isAfter(activityStartsAt)) {
+      throw conflictError('Activity time conflict');
+    }
+  }
 }
