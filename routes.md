@@ -129,21 +129,26 @@ Allows the user to get all the places and its activities.
 ```json
 [
   {
-    "id": 16,
-    "name": "Conference Talk",
-    "startsAt": "09:00",
-    "placeId": 1,
-    "endsAt": "10:00",
-    "createdAt": "2023-05-24T01:13:40.429Z",
-    "updatedAt": "2023-05-24T01:13:40.426Z",
-    "Place": {
-      "id": 1,
-      "name": "Auditório Principal",
-      "capacity": 100,
-      "createdAt": "2023-05-24T00:50:23.225Z",
-      "updatedAt": "2023-05-24T00:50:23.219Z"
-    },
-    "date": "2023-06-02"
+    "id": 1,
+    "name": "Auditório Principal",
+    "activities": [
+      {
+        "id": 16,
+        "name": "Conference Talk",
+        "placeId": 1,
+        "startsAt": "09:00",
+        "endsAt": "10:00",
+        "spotsAvailable": 99
+      },
+      {
+        "id": 17,
+        "name": "Workshop",
+        "placeId": 1,
+        "startsAt": "10:00",
+        "endsAt": "11:00",
+        "spotsAvailable": 99
+      }
+    ]
   }
 ]
 ```
