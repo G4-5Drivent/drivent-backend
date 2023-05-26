@@ -93,6 +93,7 @@ const activityService = {
   getActivityDays,
   subscribeToActivity,
   unsubscribeToActivity,
+  getDatePlacesAndActivities,
 };
 
 export default activityService;

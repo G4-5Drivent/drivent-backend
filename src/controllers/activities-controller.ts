@@ -51,3 +51,15 @@ export async function unsubscribeToActivity(req: AuthenticatedRequest, res: Resp
     next(error);
   }
 }
+
+export async function getDatePlacesAndActivities(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req;
+  const { date } = req.body;
+
+  try {
+    const activities = await activityService.getDatePlacesAndActivities(userId, date);
+    return res.status(httpStatus.OK).send(activities);
+  } catch (error) {
+    next(error);
+  }
+}

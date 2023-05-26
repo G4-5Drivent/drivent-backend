@@ -113,7 +113,7 @@ Allows the user to get all the places and its activities.
 
 ### Request
 
-`GET /activities/place`
+`GET /activities/places/date`
 
 ### Request Body
 
