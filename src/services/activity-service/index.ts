@@ -14,7 +14,19 @@ async function getActivitiesByDay(userId: number, date: string) {
   const targetDate = dayjs(date, 'YYYY-MM-DD');
   if (!targetDate.isValid()) throw badRequestError();
 
-  return activityRepository.getActivitiesByDay(targetDate);
+  const activities = await activityRepository.getActivitiesByDay(targetDate);
+
+  const formattedActivities = activities.map((activity) => {
+    const formattedActivity = {
+      ...activity,
+      startsAt: dayjs(activity.startsAt).format('HH:mm'),
+      endsAt: dayjs(activity.endsAt).format('HH:mm'),
+    };
+
+    return formattedActivity;
+  });
+
+  return formattedActivities;
 }
 
 interface ActivityDay {

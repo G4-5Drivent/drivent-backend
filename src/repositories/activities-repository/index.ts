@@ -9,6 +9,9 @@ export async function getActivitiesByDay(targetDate: Dayjs) {
         lt: targetDate.endOf('day').toDate(),
       },
     },
+    include: {
+      Place: true,
+    },
   });
   return activities;
 }
