@@ -68,7 +68,7 @@ export async function getPlaceById(id: number) {
   });
 }
 
-export async function unsubscribeToActivity(activityId: number, userId: number) {
+export async function unsubscribeToActivity(userId: number, activityId: number) {
   return await prisma.activityEnrollment.deleteMany({
     where: {
       activityId,

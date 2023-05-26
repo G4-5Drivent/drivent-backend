@@ -39,3 +39,15 @@ export async function subscribeToActivity(req: AuthenticatedRequest, res: Respon
     next(error);
   }
 }
+
+export async function unsubscribeToActivity(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const { userId } = req;
+  const { activityId } = req.body;
+
+  try {
+    await activityService.unsubscribeToActivity(userId, activityId);
+    return res.sendStatus(httpStatus.OK);
+  } catch (error) {
+    next(error);
+  }
+}
