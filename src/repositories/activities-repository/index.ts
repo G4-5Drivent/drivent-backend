@@ -45,6 +45,14 @@ export async function getActivityEnrollmentsById(activityId: number) {
   });
 }
 
+export async function getUserActivities(userId: number) {
+  return await prisma.activityEnrollment.findMany({
+    where: {
+      userId,
+    },
+  });
+}
+
 export async function getUserActivityEnrollmendById(activityId: number, userId: number) {
   return await prisma.activityEnrollment.findFirst({
     where: {

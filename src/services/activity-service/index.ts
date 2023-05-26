@@ -5,6 +5,7 @@ import { badRequestError } from '@/errors/bad-request-error';
 import * as activityRepository from '@/repositories/activities-repository';
 import { notFoundError } from '@/errors';
 import { forBiddenError } from '@/errors/forbidden-error';
+import { ActivityFullCapacityError } from '@/errors/activity-full-capacity-error';
 
 async function getActivitiesByDay(userId: number, date: string) {
   if (!date) throw badRequestError();
@@ -112,7 +113,7 @@ async function checkActivityAvailability(activityId: number) {
 
   const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
 
-  if (activityEnrollments.length >= placeCapacity.capacity) throw forBiddenError();
+  if (activityEnrollments.length >= placeCapacity.capacity) throw ActivityFullCapacityError();
 }
 
 async function checkUserAlreadySubscribed(activityId: number, userId: number) {
@@ -120,22 +121,22 @@ async function checkUserAlreadySubscribed(activityId: number, userId: number) {
   if (activityEnrollment) throw forBiddenError();
 }
 
-// async function checkActivitiesTimeConflict(activityId: number, userId: number) {
-//   const activity = await activityRepository.getActivityById(activityId);
+async function checkActivitiesTimeConflict(activityId: number, userId: number) {
+  const activity = await activityRepository.getActivityById(activityId);
 
-//   if (!activity) throw notFoundError();
+  if (!activity) throw notFoundError();
 
-//   const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
+  const activityEnrollments = await activityRepository.getActivityEnrollmentsById(activityId);
 
-//   const userEnrollments = activityEnrollments.filter((enrollment) => enrollment.userId === userId);
+  const userEnrollments = activityEnrollments.filter((enrollment) => enrollment.userId === userId);
 
-//   const userEnrollmentsIds = userEnrollments.map((enrollment) => enrollment.id);
+  const userEnrollmentsIds = userEnrollments.map((enrollment) => enrollment.id);
 
-//   const userEnrollmentsActivities = await activityRepository.getActivitiesByIds(userEnrollmentsIds);
+  const userEnrollmentsActivities = await activityRepository.getActivitiesByIds(userEnrollmentsIds);
 
-//   const activitiesTimeConflict = userEnrollmentsActivities.filter(
-//     (enrollmentActivity) => enrollmentActivity.startsAt === activity.startsAt,
-//   );
+  const activitiesTimeConflict = userEnrollmentsActivities.filter(
+    (enrollmentActivity) => enrollmentActivity.startsAt === activity.startsAt,
+  );
 
-//   if (activitiesTimeConflict.length > 0) throw forBiddenError();
-// }
+  if (activitiesTimeConflict.length > 0) throw forBiddenError();
+}
