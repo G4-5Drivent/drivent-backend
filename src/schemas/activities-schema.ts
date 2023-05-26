@@ -5,5 +5,5 @@ export const activitySchema = Joi.object({
 });
 
 export const dateBodySchema = Joi.object({
-  date: Joi.string().required(),
+  date: Joi.date().required(),
 });

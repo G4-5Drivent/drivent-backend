@@ -3,14 +3,14 @@ import { NextFunction, Response } from 'express';
 import { AuthenticatedRequest } from '@/middlewares';
 import activityService from '@/services/activity-service';
 
-export async function getActivitiesByDay(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export async function getActivitiesByDate(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const { userId } = req;
   const { date } = req.body;
 
   console.log(date);
 
   try {
-    const activities = await activityService.getActivitiesByDay(userId, date);
+    const activities = await activityService.getActivitiesByDate(userId, date);
     return res.status(httpStatus.OK).send(activities);
   } catch (error) {
     next(error);

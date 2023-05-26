@@ -7,7 +7,7 @@ import { conflictError, notFoundError } from '@/errors';
 import { forBiddenError } from '@/errors/forbidden-error';
 import { ActivityFullCapacityError } from '@/errors/activity-full-capacity-error';
 
-async function getActivitiesByDay(userId: number, date: string) {
+async function getActivitiesByDate(userId: number, date: string) {
   if (!date) throw badRequestError();
 
   await checkUserAccessToActivities(userId);
@@ -77,8 +77,19 @@ async function unsubscribeToActivity(userId: number, activityId: number) {
   return await activityRepository.unsubscribeToActivity(userId, activityId);
 }
 
+async function getDatePlacesAndActivities(userId: number, date: string) {
+  if (!date) throw badRequestError();
+
+  await checkUserAccessToActivities(userId);
+
+  const targetDate = dayjs(date, 'YYYY-MM-DD');
+  if (!targetDate.isValid()) throw badRequestError();
+
+  return await activityRepository.getDatePlacesAndActivities(targetDate);
+}
+
 const activityService = {
-  getActivitiesByDay,
+  getActivitiesByDate,
   getActivityDays,
   subscribeToActivity,
   unsubscribeToActivity,
