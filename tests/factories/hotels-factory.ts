@@ -51,7 +51,6 @@ export function getHotelsMock() {
       image: 'teste image',
       createdAt: new Date(),
       updatedAt: new Date(),
-      Rooms: [],
     },
   ];
 
