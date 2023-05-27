@@ -120,8 +120,6 @@ const activityService = {
   getDatePlacesAndActivities,
 };
 
-export default activityService;
-
 async function checkUserAccessToActivities(userId: number) {
   const userTicket = await ticketService.getTicketByUserId(userId);
   if (!userTicket) throw notFoundError();
@@ -177,3 +175,5 @@ async function checkActivitiesTimeConflict(activityId: number, userId: number) {
     }
   }
 }
+
+export default activityService;

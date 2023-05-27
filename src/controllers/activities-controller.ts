@@ -7,8 +7,6 @@ export async function getActivitiesByDate(req: AuthenticatedRequest, res: Respon
   const { userId } = req;
   const { date } = req.body;
 
-  console.log(date);
-
   try {
     const activities = await activityService.getActivitiesByDate(userId, date);
     return res.status(httpStatus.OK).send(activities);
