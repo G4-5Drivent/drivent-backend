@@ -163,6 +163,7 @@ model Activity {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   ActivityEnrollment ActivityEnrollment[]
+  	@@index([startsAt])
 }
 
 model Place {
