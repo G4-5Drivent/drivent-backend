@@ -15,7 +15,7 @@ activitiesRouter
   .post('', validateBody(activitySchema), subscribeToActivity)
   .get('/date/:date', getActivitiesByDate)
   .get('/days', getDayActivities)
-  .get('/places/date', validateBody(dateBodySchema), getDatePlacesAndActivities)
+  .get('/places/date/:date', getDatePlacesAndActivities)
   .delete('', validateBody(activitySchema), unsubscribeToActivity);
 
 export { activitiesRouter };

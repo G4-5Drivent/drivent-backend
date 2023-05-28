@@ -88,23 +88,6 @@ async function main() {
   let newActivities;
   if (!activities) {
     const currentTime = dayjs().startOf('day').add(9, 'hour');
-    const activityNames = [
-      'Conference Talk',
-      'Workshop',
-      'Panel Discussion',
-      'Keynote Speech',
-      'Networking Event',
-      'Training Session',
-      'Hackathon',
-      'Seminar',
-      'Product Demo',
-      'Team Building Exercise',
-      'Q&A Session',
-      'Industry Panel',
-      'Roundtable Discussion',
-      'Presentation',
-      'Tutorial',
-    ];
 
     await prisma.activity.createMany({
       data: getActivities(),
@@ -135,42 +118,60 @@ function getActivities() {
   const dayToSet = dayjs('2023-06-02');
   const currentTime = dayToSet.startOf('day').add(9, 'hour');
 
+  const activityNames = [
+    'Conference Talk',
+    'Workshop',
+    'Panel Discussion',
+    'Keynote Speech',
+    'Networking Event',
+    'Training Session',
+    'Hackathon',
+    'Seminar',
+    'Product Demo',
+    'Team Building Exercise',
+    'Q&A Session',
+    'Industry Panel',
+    'Roundtable Discussion',
+    'Presentation',
+    'Tutorial',
+  ];
+
   const arr: any = [];
 
   for (let i = 0; i < days; i++) {
     const activityDate = currentTime.add(i, 'day');
     arr.push({
-      name: 'Conference Talk',
+      name: activityNames[Math.floor(Math.random() * activityNames.length)],
       startsAt: activityDate.toDate(),
-      endsAt: activityDate.add(1, 'hour').toDate(),
+      endsAt: activityDate.add(1 + Math.floor(Math.random() * 3), 'hour').toDate(),
       placeId: 1,
       updatedAt: dayjs().toDate(),
     });
     arr.push({
-      name: 'Workshop',
+      name: activityNames[Math.floor(Math.random() * activityNames.length)],
       startsAt: activityDate.add(1, 'hour').toDate(),
-      endsAt: activityDate.add(2, 'hour').toDate(),
+      endsAt: activityDate.add(2 + Math.floor(Math.random() * 3), 'hour').toDate(),
       placeId: 1,
       updatedAt: dayjs().toDate(),
     });
     arr.push({
-      name: 'Panel Discussion',
-      startsAt: activityDate.add(2, 'hour').toDate(),
-      endsAt: activityDate.add(4, 'hour').toDate(),
+      name: activityNames[Math.floor(Math.random() * activityNames.length)],
+      startsAt: activityDate.toDate(),
+      endsAt: activityDate.add(1 + Math.floor(Math.random() * 3), 'hour').toDate(),
       placeId: 2,
       updatedAt: dayjs().toDate(),
     });
     arr.push({
-      name: 'Keynote Speech',
-      startsAt: activityDate.add(3, 'hour').toDate(),
-      endsAt: activityDate.add(4, 'hour').toDate(),
+      name: activityNames[Math.floor(Math.random() * activityNames.length)],
+      startsAt: activityDate.toDate(),
+      endsAt: activityDate.add(1 + Math.floor(Math.random() * 3), 'hour').toDate(),
       placeId: 3,
       updatedAt: dayjs().toDate(),
     });
     arr.push({
-      name: 'Networking Event',
+      name: activityNames[Math.floor(Math.random() * activityNames.length)],
       startsAt: activityDate.add(4, 'hour').toDate(),
-      endsAt: activityDate.add(5, 'hour').toDate(),
+      endsAt: activityDate.add(5 + Math.floor(Math.random() * 3), 'hour').toDate(),
       placeId: 3,
       updatedAt: dayjs().toDate(),
     });

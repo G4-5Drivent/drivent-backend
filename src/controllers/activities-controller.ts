@@ -52,7 +52,7 @@ export async function unsubscribeToActivity(req: AuthenticatedRequest, res: Resp
 
 export async function getDatePlacesAndActivities(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   const { userId } = req;
-  const { date } = req.body;
+  const { date } = req.params;
 
   try {
     const activities = await activityService.getDatePlacesAndActivities(userId, date);

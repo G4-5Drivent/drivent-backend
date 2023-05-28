@@ -100,6 +100,7 @@ async function getDatePlacesAndActivities(userId: number, date: string) {
           startsAt: dayjs(activity.startsAt).format('HH:mm'),
           endsAt: dayjs(activity.endsAt).format('HH:mm'),
           spotsAvailable: place.capacity - activity.ActivityEnrollment.length,
+          isSubscribed: activity.ActivityEnrollment.some((enrollment) => enrollment.userId === userId),
         };
 
         return formattedActivity;
