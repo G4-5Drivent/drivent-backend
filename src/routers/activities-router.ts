@@ -13,9 +13,9 @@ const activitiesRouter = Router();
 activitiesRouter
   .use('/*', authenticateToken)
   .post('', validateBody(activitySchema), subscribeToActivity)
-  .get('/date', validateBody(dateBodySchema), getActivitiesByDate)
+  .get('/date/:date', getActivitiesByDate)
   .get('/days', getDayActivities)
-  .get('/places/date', validateBody(dateBodySchema), getDatePlacesAndActivities)
+  .get('/places/date/:date', getDatePlacesAndActivities)
   .delete('', validateBody(activitySchema), unsubscribeToActivity);
 
 export { activitiesRouter };
