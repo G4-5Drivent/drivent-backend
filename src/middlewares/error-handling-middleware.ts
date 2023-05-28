@@ -68,6 +68,12 @@ export function handleApplicationErrors(
     });
   }
 
+  if (err.name === 'UnprocessableEntityError') {
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).send({
+      message: err.message,
+    });
+  }
+
   res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
     error: 'InternalServerError',
     message: 'Internal Server Error',
