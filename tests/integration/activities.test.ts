@@ -34,17 +34,15 @@ const server = supertest(app);
 
 describe('GET /activities/date', () => {
   it('should respond with status 401 if no token is given', async () => {
-    const date = dayjs().format('YYYY-MM-DD');
-    const response = await server.get(`/activities/date/${date}`);
+    const response = await server.get('/activities/date');
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
 
   it('should respond with status 401 if given token is not valid', async () => {
     const token = faker.lorem.word();
-    const date = dayjs().format('YYYY-MM-DD');
 
-    const response = await server.get(`/activities/date/${date}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/activities/date').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -52,9 +50,8 @@ describe('GET /activities/date', () => {
   it('should respond with status 401 if there is no session for given token', async () => {
     const userWithoutSession = await createUser();
     const token = jwt.sign({ userId: userWithoutSession.id }, process.env.JWT_SECRET);
-    const date = dayjs().format('YYYY-MM-DD');
 
-    const response = await server.get(`/activities/date/${date}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/activities/date').set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -62,10 +59,9 @@ describe('GET /activities/date', () => {
   describe('when token is valid', () => {
     it('should respond with empty array when there are no activity created', async () => {
       const token = await generateValidToken();
-      const date = dayjs().format('YYYY-MM-DD');
 
       const response = await server
-        .get(`/activities/date/${date}`)
+        .get('/activities/date')
         .set('Authorization', `Bearer ${token}`)
         .send({ date: Date.now() });
 
@@ -76,10 +72,9 @@ describe('GET /activities/date', () => {
       const user = await createUser();
       const token = await generateValidToken(user);
       const activity = await createActivity();
-      const date = dayjs(activity.startsAt).format('YYYY-MM-DD');
 
       const response = await server
-        .get(`/activities/date/${date}`)
+        .get('/activities/date')
         .set('Authorization', `Bearer ${token}`)
         .send({ date: dayjs(activity.startsAt).format('YYYY-MM-DD') });
 
@@ -94,10 +89,9 @@ describe('GET /activities/date', () => {
     const ticketType = await createTicketTypeWithHotel();
     const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
     const activity = await createActivity();
-    const date = dayjs(activity.startsAt).format('YYYY-MM-DD');
 
     const response = await server
-      .get(`/activities/date/${date}`)
+      .get('/activities/date')
       .set('Authorization', `Bearer ${token}`)
       .send({ date: dayjs(activity.startsAt).format('YYYY-MM-DD') });
 
@@ -112,9 +106,11 @@ it('should respond with status 403 when a activity exists and the user have not 
   const ticketType = await createTicketTypeRemote();
   const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.RESERVED);
   const activity = await createActivity();
-  const date = dayjs(activity.startsAt).format('YYYY-MM-DD');
 
-  const response = await server.get(`/activities/date/${date}`).set('Authorization', `Bearer ${token}`);
+  const response = await server
+    .get('/activities/date')
+    .set('Authorization', `Bearer ${token}`)
+    .send({ date: dayjs(activity.startsAt).format('YYYY-MM-DD') });
 
   expect(response.status).toBe(httpStatus.FORBIDDEN);
 });
@@ -126,10 +122,9 @@ it('should respond with status 200 and with existing activity data when the user
   const ticketType = await createTicketTypeWithHotel();
   const ticket = await createTicket(enrollment.id, ticketType.id, TicketStatus.PAID);
   const activity = await createActivity();
-  const date = dayjs(activity.startsAt).format('YYYY-MM-DD');
 
   const response = await server
-    .get(`/activities/date/${date}`)
+    .get('/activities/date')
     .set('Authorization', `Bearer ${token}`)
     .send({ date: dayjs(activity.startsAt).format('YYYY-MM-DD') });
 
